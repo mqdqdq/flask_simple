@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message</title>
+    <!-- SocketIO script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+</head>
+<body>
+    <p><b>Users connected: </b>
+    <p id="connections-field"></p>
+    <p><b>Last message: </b></p>
+    <p id="message-field"></p>
+    <label for="input-field">Enter a message: </label>
+    <input id="input-field" type="text" placeholder="Enter a message to send">
+</body>
+<script defer="true">
+
+    const socket = io();
+
+    const messageField =  document.getElementById('message-field');
+    const connectionsField =  document.getElementById('connections-field');
+    const inputField = document.getElementById('input-field');
+    let connections = 0;
+
+    socket.on("client-connect", function() {
+        connections += 1;
+        connectionsField.innerHTML = connections;
+    });
+
+    socket.on("client-disconnect", function() {
+        connections -= 1;
+        connectionsField.innerHTML = connections;
+    });
+
+    socket.on("client-new-message", function(message) {
+        messageField.innerHTML = message;
+    });
+
+    inputField.addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        let message = inputField.value;
+        socket.emit("server-new-message", message);
+    }
+    });
+    
+</script>
+</html>
