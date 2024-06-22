@@ -24,14 +24,12 @@
     const inputField = document.getElementById('input-field');
     let connections = 0;
 
-    socket.on("client-connect", function() {
-        connections += 1;
-        connectionsField.innerHTML = connections;
+    socket.on("client-connect", function(user_count) {
+        connectionsField.innerHTML = user_count;
     });
 
-    socket.on("client-disconnect", function() {
-        connections -= 1;
-        connectionsField.innerHTML = connections;
+    socket.on("client-disconnect", function(user_count) {
+        connectionsField.innerHTML = user_count;
     });
 
     socket.on("client-new-message", function(message) {
