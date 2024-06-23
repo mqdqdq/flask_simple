@@ -11,7 +11,8 @@ def on_join():
         with ChatDb() as db:
             db.add_user_to_room(room_id)
             _, _, user_count = db.get_room(room_id)
-        emit('client-connect', user_count, join_room(room_id))
+        join_room(room_id)
+        emit('client-connect', user_count, to=room_id)
 
 @socketio.on('disconnect')
 def on_leave():
@@ -20,7 +21,8 @@ def on_leave():
         with ChatDb() as db:
             db.remove_user_from_room(room_id)
             _, _, user_count = db.get_room(room_id)
-        emit('client-disconnect', user_count, leave_room(room_id))
+        leave_room(room_id)
+        emit('client-disconnect', user_count, to=room_id)
 
 @socketio.on('server-new-message')
 def message(message):
