@@ -1,4 +1,5 @@
 import sqlite3, secrets
+from werkzeug.security import check_password_hash
 
 class ChatDb():
 
@@ -31,11 +32,9 @@ class ChatDb():
         except Exception as error:
             print(f"Database error: {error}")
 
-    def add_room(self):
+    def add_room(self, room_id, password_hash):
         try:
-            #room_id = secrets.token_urlsafe(6)
-            room_id = 'JJb407rp'
-            self.conn.execute('INSERT INTO rooms (room_id) VALUES (?)', (room_id, ))
+            self.conn.execute('INSERT INTO rooms (room_id, password_hash) VALUES (?, ?)', (room_id, password_hash,))
         except Exception as error:
             print(f"Database error: {error}")
 

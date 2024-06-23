@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE IF NOT EXISTS rooms (
     room_id TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
     user_count INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (room_id)
 );
