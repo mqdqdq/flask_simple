@@ -22,12 +22,15 @@ def on_leave():
             db.remove_user_from_room(room_id)
             _, _, user_count = db.get_room(room_id)
         leave_room(room_id)
+        session['room_id'] = None
         emit('client-disconnect', user_count, to=room_id)
 
 @socketio.on('server-new-message')
 def message(message):
     room_id = session.get('room_id')
-    if room_id:
+    username = session.get('username')
+    if room_id and username:
         with ChatDb() as db:
-            db.add_chat_entry(room_id, message)
-        emit('client-new-message', message, to=room_id)
+            db.add_chat_entry(room_id, message, username)
+        data = {'username': username, 'message': message}
+        emit('client-new-message', data, to=room_id)

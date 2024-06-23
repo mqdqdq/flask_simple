@@ -10,13 +10,11 @@
 <body>
     <p><b>Users connected: </b>
     <p id="connections-field"></p>
-    <p><b>Last message: </b></p>
-    <p id="message-field"></p>
-    {% for message in messages %}
-    <ul>
+    <ul id="message-list">
+        {% for message in messages %}
         <li>{{ message }}</li>
+        {% endfor %}
     </ul>
-    {% endfor %}
     <label for="input-field">Enter a message: </label>
     <input id="input-field" type="text" placeholder="Enter a message to send">
 </body>
@@ -27,6 +25,7 @@
     const messageField =  document.getElementById('message-field');
     const connectionsField =  document.getElementById('connections-field');
     const inputField = document.getElementById('input-field');
+    const messageList = document.getElementById('message-list');
     let connections = 0;
 
     socket.on("client-connect", function(user_count) {
@@ -37,8 +36,10 @@
         connectionsField.innerHTML = user_count;
     });
 
-    socket.on("client-new-message", function(message) {
-        messageField.innerHTML = message;
+    socket.on("client-new-message", function(data) {
+        var chatEntry = document.createElement('li');
+        chatEntry.appendChild(document.createTextNode(data['username'] + ': ' + data['message']));
+        messageList.appendChild(chatEntry);
     });
 
     inputField.addEventListener("keyup", function(event) {

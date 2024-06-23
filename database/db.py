@@ -46,8 +46,8 @@ class ChatDb():
             print(f"Database error: {error}")
             return None
         
-    def add_chat_entry(self, room_id, chat_text):
+    def add_chat_entry(self, room_id, chat_text, username):
         try:
-            self.conn.execute('INSERT INTO chats (room_id, chat_text) VALUES (?, ?)', (room_id, chat_text, ))
+            self.conn.execute('INSERT INTO chats (room_id, chat_text, username) VALUES (?, ?, ?)', (room_id, chat_text, username))
         except Exception as error:
             print(f"Database error: {error}")
