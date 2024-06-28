@@ -1,7 +1,8 @@
 import sqlite3, secrets
 from werkzeug.security import check_password_hash
+import ast
 
-class ChatDb():
+class Db():
 
     def __enter__(self):
         self.conn = sqlite3.connect('database.db')
@@ -12,42 +13,70 @@ class ChatDb():
         self.conn.commit()
         self.conn.close()
 
+    def add_room(self, room_id, password_hash, game_content, game_type):
+        try:
+            self.conn.execute('INSERT INTO rooms (room_id, password_hash, game_content, game_type) VALUES (?, ?, ?, ?)', (room_id, password_hash, game_content, game_type, ))
+        except Exception as error:
+            print(f"Database error: {error}")
+
     def get_room(self, room_id):
         try:
-            room = self.conn.execute('SELECT * FROM rooms WHERE room_id = ?', (room_id,)).fetchone()
+            room = self.conn.execute('SELECT * FROM rooms WHERE room_id = ?', (room_id, )).fetchone()
             return room
         except Exception as error:
             print(f"Database error: {error}")
             return None
-    
-    def add_user_to_room(self, room_id):
+        
+    def get_all_rooms(self):
         try:
-            self.conn.execute('UPDATE rooms SET user_count = (user_count + 1) WHERE room_id = ?', (room_id, ))
-        except Exception as error:
-            print(f"Database error: {error}")
-
-    def remove_user_from_room(self, room_id):
-        try:
-            self.conn.execute('UPDATE rooms SET user_count = (user_count - 1) WHERE room_id = ?', (room_id, ))
-        except Exception as error:
-            print(f"Database error: {error}")
-
-    def add_room(self, room_id, password_hash):
-        try:
-            self.conn.execute('INSERT INTO rooms (room_id, password_hash) VALUES (?, ?)', (room_id, password_hash,))
-        except Exception as error:
-            print(f"Database error: {error}")
-
-    def get_chat_content(self, room_id):
-        try:
-            chat_content = self.conn.execute('SELECT * FROM chats WHERE room_id = ?', (room_id, )).fetchall()
-            return chat_content
+            rooms = self.conn.execute('SELECT * FROM rooms').fetchall()
+            return rooms
         except Exception as error:
             print(f"Database error: {error}")
             return None
         
-    def add_chat_entry(self, room_id, chat_text, username):
+    def get_game_content(self, room_id):
         try:
-            self.conn.execute('INSERT INTO chats (room_id, chat_text, username) VALUES (?, ?, ?)', (room_id, chat_text, username))
+            game_content = self.conn.execute('SELECT game_content FROM rooms WHERE room_id = (?)', (room_id, )).fetchone()[0]
+            game_content = ast.literal_eval(game_content)
+            return game_content
         except Exception as error:
             print(f"Database error: {error}")
+            return None
+        
+    def get_game_type(self, room_id):
+        try:
+            game_type = self.conn.execute('SELECT game_type FROM rooms WHERE room_id = (?)', (room_id, )).fetchone()[0]
+            return game_type
+        except Exception as error:
+            print(f"Database error: {error}")
+            return None
+        
+    def update_game_content(self, room_id, game_content):
+        try:
+            self.conn.execute('UPDATE rooms SET game_content = ? WHERE room_id = ?', (game_content, room_id, ))
+        except Exception as error:
+            print(f"Database error: {error}")
+            return None
+        
+    def add_user_to_room(self, room_id):
+        try:
+            room = self.conn.execute('UPDATE rooms SET current_users = current_users + 1 WHERE room_id = (?)', (room_id, ))
+        except Exception as error:
+            print(f"Database error: {error}")
+            return None
+        
+    def close_room(self, room_id):
+        try:
+            self.conn.execute('UPDATE rooms SET room_closed = 1 WHERE room_id = ?', (room_id, ))
+        except Exception as error:
+            print(f"Database error: {error}")
+            return None
+        
+    def remove_user_from_room(self, room_id):
+        try:
+            room = self.conn.execute('UPDATE rooms SET current_users = current_users - 1 WHERE room_id = (?)', (room_id,))
+            return room
+        except Exception as error:
+            print(f"Database error: {error}")
+            return None

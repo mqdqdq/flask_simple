@@ -1,5 +1,5 @@
-from db import ChatDb
+from db import Db
 
-with ChatDb() as db:
+with Db() as db:
         with open('database/schema.sql') as f:
             db.conn.executescript(f.read())

@@ -11,9 +11,10 @@ h11==0.14.0
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
+numpy==2.0.0
 packaging==24.1
 python-engineio==4.9.1
-python-socketio==5.11.3
+python-socketio==5.11.2
 simple-websocket==1.0.0
 Werkzeug==3.0.3
 wsproto==1.2.0

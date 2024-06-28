@@ -1,0 +1,45 @@
+.cell { 
+    border: 1px solid black;
+    width: 1.5em; 
+    height: 1.5em; 
+    font-size: 62px; 
+    text-align: center;
+    padding: 0;
+}
+
+.button {
+    background-color: black; /* Green */
+    color: white;
+    width: max-content;
+    padding: 1em 1em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.navigation-container {
+    border: 2px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    max-width: fit-content;
+    padding: 1em;
+}
+
+.grid {
+    border: 2px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4em;
+    max-width: fit-content;
+}
+
+.status-container {
+    padding-left: 1em;
+    padding-right: 1em;
+    border: 2px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4em;
+    max-width: fit-content;
+}

@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Create a room</h1>
-    <form method="post">
-        <label for="password-field">Password:</label>
-        <input type="password" name="password-field">
-        <label for=""username-field">Username:</label>
-        <input type="text" name="username-field">
-        <input type="submit" value="Create Room">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="header-container">
+  <h1>Gameroom</h1>
+</div>
+<div class="form-container">
+  <form method="post">
+      <label for="gametype">Choose a game:</label>
+      <select name="gametype">
+        <option value="tictactoe">TicTacToe</option>
+      </select>
+      <label for="password">Password:</label>
+      <input name="password" type="password">
+      <input type="submit" value="Create Room">
+  </form>
+</div>
+{% endblock %}
