@@ -45,8 +45,39 @@ def update_game(data):
         row = data['row']
         if game_type == 'tictactoe':
             move_success = game.make_move(col, row)
+        print(col)
+        print(row)
+        print(move_success)
         if move_success:
             updated_game_content = convert_to_game_content(game)
             with Db() as db:
                 db.update_game_content(room_id, updated_game_content)
             emit('content-to-client', updated_game_content, to=room_id)
+
+@socketio.on('rematch-to-server')
+def handle_rematch():
+    has_rematched = session.get('has_rematched')
+    if not has_rematched:
+        room_id = session.get('room_id')
+        if room_id:
+            with Db() as db:
+                db.add_rematch_request(room_id)
+                session['has_rematched'] = True
+                rematch_requests = db.get_rematch_requests(room_id)
+            if rematch_requests >= MAX_USERS:
+                with Db() as db:
+                    game_type = db.get_game_type(room_id)
+                    game_content =  db.get_game_content(room_id)
+                    db.reset_rematch_requests(room_id)
+                if game_type == 'tictactoe':
+                    game = convert_to_game(game_content)
+                    game.new_game()
+                    updated_game_content = convert_to_game_content(game)
+                with Db() as db:
+                    db.update_game_content(room_id, updated_game_content)
+                emit('content-to-client', updated_game_content, to=room_id)
+                emit('rematch-reset-client', to=room_id)
+
+@socketio.on('rematch-reset-server')
+def handle_rematch_reset():
+    session['has_rematched'] = False

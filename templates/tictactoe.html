@@ -79,6 +79,11 @@ socket.on("pause-game-client", function() {
     statusField.innerHTML = STATUS_DISCONNECT;
 });
 
+socket.on("rematch-reset-client", function() {
+    swapSymbols();
+    socket.emit("rematch-reset-server");
+});
+
 function addSquareListeners() {
     for (let row = 0; row < ROWS; row++) {
         for (let col = 0; col < COLUMNS; col++) {
@@ -86,7 +91,6 @@ function addSquareListeners() {
             cell.addEventListener('click', function(e) {
                 if ((opponentConnected) && (cell.value == '') && (turn == PLAYER)) {
                     data = {'row': row, 'col': col};
-                    console.log(data);
                     socket.emit("content-to-server", data);
                 }
             });
@@ -152,7 +156,7 @@ function addRematchListener() {
         if (state != STATE_CONTINUE) {
             resetBoard()
             statusField.innerHTML = STATUS_WAIT;
-            swapSymbols();
+            socket.emit("rematch-to-server");
         }
     });
 }
